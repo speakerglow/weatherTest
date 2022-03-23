@@ -1,4 +1,6 @@
-apply plugin: 'com.android.application'
+package com.example.weathertest.storage
+/*
+* apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
@@ -98,3 +100,4 @@ dependencies {
     //Okhttp
     implementation "com.squareup.okhttp3:logging-interceptor:4.8.0"
 }
+* */
