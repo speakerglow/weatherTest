@@ -9,7 +9,6 @@ data class CurrentWeather(
     val temp_c: Double,
     val temp_f: Double,
     val is_day: Int,
-    val condition: String,
     val wind_mph: Double,
     val wind_kph: Double,
     val wind_degree: Int,

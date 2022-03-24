@@ -1,10 +1,11 @@
 package com.example.weathertest.network
 
 import okhttp3.Call
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface Api {
 
@@ -45,6 +46,12 @@ interface Api {
         airQuality: String,
         @Query("alerts")
         alerts: String
+    ): ResponseBody
+
+    @POST
+    suspend fun getCityList(
+        @Url url: String = "https://countriesnow.space/api/v0.1/countries/cities",
+        @Body body: RequestBody
     ): ResponseBody
 
 }

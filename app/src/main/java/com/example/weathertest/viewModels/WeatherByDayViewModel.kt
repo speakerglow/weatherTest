@@ -3,6 +3,7 @@ package com.example.weathertest.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weathertest.network.NetProvider
+import com.example.weathertest.storage.StorageProvider
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WeatherByDayViewModel @Inject constructor(
-    private val netProvider: NetProvider
+    private val netProvider: NetProvider,
+    private val storageProvider: StorageProvider
 ) : ViewModel() {
 
     private val sharedFlow = MutableSharedFlow<String>()
@@ -25,7 +27,8 @@ class WeatherByDayViewModel @Inject constructor(
         currentJob = viewModelScope.launch {
             sharedFlow.emit("loading")
             try {
-                sharedFlow.emit(netProvider.getForecast())
+                val cityName = storageProvider.getCurrentCity()!!.name
+                sharedFlow.emit(netProvider.getForecast(cityName))
             } catch (ex: Exception) {
                 sharedFlow.emit("unknownerror")
             }

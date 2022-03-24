@@ -1,8 +1,16 @@
 package com.example.weathertest.network
 
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import kotlin.random.Random
 
 class NetProviderImpl(private val api: Api) : NetProvider {
+    override suspend fun getCityList(): String {
+        val body = REQUEST_BODY
+            .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        return api.getCityList(body = body).string()
+    }
+
     override suspend fun getSome(): String {
 //        val builder: Response.Builder = Response.Builder()
 //        builder.code(200).message("success").body(ResponseBody.create(null, "null"));
@@ -14,28 +22,29 @@ class NetProviderImpl(private val api: Api) : NetProvider {
 
     override suspend fun getWeather(): String {
         return api.getCurrentWeather(
-            key = "4b0f5a31a78447dfafb65529222203",
+            key = API_KEY,
             city = "Perm",
             airQuality = "no"
         ).string()
     }
 
-    override suspend fun getForecast(): String {
+    override suspend fun getForecast(cityName: String): String {
         return api.getWeatherForecast(
-            key = "4b0f5a31a78447dfafb65529222203",
-            city = "Perm",
+            key = API_KEY,
+            city = cityName,
             daysCount = 7,
             airQuality = "no",
             alerts = "no"
         ).string()
     }
 
-//    override suspend fun getWeather(): String {
-//        return api.getWeather(
-//            latitude = 58.005367,
-//            longitude = 56.208407,
-//            count = 3,
-//            appid = "63cd2d3071ebce1867e6aa6e352ef35d"
-//        ).string()
-//    }
+    companion object {
+        private const val API_KEY = "4b0f5a31a78447dfafb65529222203"
+        private const val REQUEST_BODY = """ 
+            {
+    "country": "russia"
+}
+"""
+    }
+
 }

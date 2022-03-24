@@ -1,9 +1,9 @@
-package com.example.weathertest.storage
+package com.example.weathertest.models.dao
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.weathertest.storage.CheckListContract
 
 @Entity(
     tableName = CheckListContract.tableName

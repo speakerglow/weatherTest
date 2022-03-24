@@ -1,18 +1,18 @@
 package com.example.weathertest.models
 
-sealed class ApiResult (val data: Weather?, val message:String?) {
+sealed class ApiResult(val data: Weather?, val message: String?) {
 
-    data class Success(val _data: Weather?): ApiResult(
-        data = _data,
+    data class Success(val weather: Weather?) : ApiResult(
+        data = weather,
         message = null
     )
 
-    data class Error(val exception: String): ApiResult(
+    data class Error(val exception: String) : ApiResult(
         data = null,
         message = exception
     )
 
-    data class Loading(val isLoading: Boolean): ApiResult(
+    class Loading : ApiResult(
         data = null,
         message = null
     )

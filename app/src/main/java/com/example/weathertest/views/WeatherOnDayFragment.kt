@@ -1,7 +1,9 @@
 package com.example.weathertest.views
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -9,11 +11,15 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.weathertest.R
 import com.example.weathertest.databinding.FragmentWeatherOnDayBinding
+import com.example.weathertest.models.ApiResult
 import com.example.weathertest.models.Weather
 import com.example.weathertest.viewModels.WeatherOnDayViewModel
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -31,22 +37,43 @@ class WeatherOnDayFragment : Fragment(R.layout.fragment_weather_on_day) {
             findNavController().navigate(R.id.action_weatherOnDayFragment_to_weatherByDayFragment)
         }
 
-//        binding.button.setOnClickListener {
-//            viewModel.load()
-//        }
-
-//        binding.button.setOnClickListener {
-//            currentJob = lifecycleScope.launch {
-//                viewModel.getFlow().collect {
-//
-//                }
-//            }
-//        }
         currentJob = lifecycleScope.launch {
-            viewModel.getFlow().collect {
-                binding.weatherTv.text = it
+            viewModel.getFlow().collect { result ->
+                when (result) {
+                    is ApiResult.Loading -> {
+                        showProgressBar(true)
+                    }
+                    is ApiResult.Success -> {
+                        binding.weatherTv.text = result.data.toString()
+                        showProgressBar(false)
+                    }
+                    is ApiResult.Error -> {
+                        showErrorSnackBar(result.exception) {
+                            viewModel.load()
+                        }
+                        showProgressBar(false)
+                    }
+                }
             }
         }
+    }
+
+    private fun showErrorSnackBar(errorMsg: String, callBack: () -> Unit) {
+        Snackbar.make(
+            binding.frameLayoutContainer,
+            errorMsg,
+            Snackbar.LENGTH_LONG
+        ).setAction(
+            "retry"
+        ) {
+            it.visibility = View.INVISIBLE
+            callBack()
+        }.show()
+    }
+
+    private fun showProgressBar(loading: Boolean) {
+        binding.progressBar.isVisible = loading
+        binding.weatherTv.isVisible = !loading
     }
 
     override fun onResume() {
