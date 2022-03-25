@@ -1,7 +1,6 @@
 package com.example.weathertest.views
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -11,15 +10,11 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.weathertest.R
 import com.example.weathertest.databinding.FragmentWeatherOnDayBinding
-import com.example.weathertest.models.ApiResult
-import com.example.weathertest.models.Weather
+import com.example.weathertest.models.ApiWeatherResult
 import com.example.weathertest.viewModels.WeatherOnDayViewModel
 import com.google.android.material.snackbar.Snackbar
-import com.squareup.moshi.Moshi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -40,14 +35,14 @@ class WeatherOnDayFragment : Fragment(R.layout.fragment_weather_on_day) {
         currentJob = lifecycleScope.launch {
             viewModel.getFlow().collect { result ->
                 when (result) {
-                    is ApiResult.Loading -> {
+                    is ApiWeatherResult.Loading -> {
                         showProgressBar(true)
                     }
-                    is ApiResult.Success -> {
+                    is ApiWeatherResult.Success -> {
                         binding.weatherTv.text = result.data.toString()
                         showProgressBar(false)
                     }
-                    is ApiResult.Error -> {
+                    is ApiWeatherResult.Error -> {
                         showErrorSnackBar(result.exception) {
                             viewModel.load()
                         }
@@ -80,7 +75,6 @@ class WeatherOnDayFragment : Fragment(R.layout.fragment_weather_on_day) {
         super.onResume()
         viewModel.load()
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         currentJob?.cancel()

@@ -3,8 +3,7 @@ package com.example.weathertest.viewModels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weathertest.models.ApiResult
-import com.example.weathertest.models.ForecastDay
+import com.example.weathertest.models.ApiWeatherResult
 import com.example.weathertest.models.Weather
 import com.example.weathertest.network.NetProvider
 import com.example.weathertest.storage.StorageProvider
@@ -14,9 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.lang.Exception
-import java.lang.NullPointerException
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class WeatherOnDayViewModel @Inject constructor(
@@ -24,19 +21,18 @@ class WeatherOnDayViewModel @Inject constructor(
     private val storageProvider: StorageProvider
 ) : ViewModel() {
 
-    private val sharedFlow = MutableSharedFlow<ApiResult>()
+    private val sharedFlow = MutableSharedFlow<ApiWeatherResult>()
 
     private var currentJob: Job? = null
 
     fun load() {
         currentJob = viewModelScope.launch {
-            sharedFlow.emit(ApiResult.Loading())
-            delay(5_000)
+            sharedFlow.emit(ApiWeatherResult.Loading())
             Log.e("Tag", "weatherOnDay viewModel job work")
             try {
-                if (storageProvider.getCurrentCity() == null) sharedFlow.emit(ApiResult.Error("No current city"))
+                if (storageProvider.getCurrentCity() == null) sharedFlow.emit(ApiWeatherResult.Error("No current city"))
                 else sharedFlow.emit(
-                    ApiResult.Success(
+                    ApiWeatherResult.Success(
                         Weather.fromJson(
                             netProvider.getForecast(
                                 storageProvider.getCurrentCity()!!.name
@@ -45,12 +41,12 @@ class WeatherOnDayViewModel @Inject constructor(
                     )
                 )
             } catch (ex: Exception) {
-                sharedFlow.emit(ApiResult.Error(ex.message ?: "oshibka"))
+                sharedFlow.emit(ApiWeatherResult.Error(ex.message ?: "oshibka"))
             }
         }
     }
 
-    fun getFlow(): Flow<ApiResult> {
+    fun getFlow(): Flow<ApiWeatherResult> {
         return sharedFlow
     }
 

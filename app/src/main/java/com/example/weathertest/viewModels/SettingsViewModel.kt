@@ -3,9 +3,8 @@ package com.example.weathertest.viewModels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weathertest.models.ApiResult
+import com.example.weathertest.models.ApiCityResult
 import com.example.weathertest.models.CitiesApiResponse
-import com.example.weathertest.models.Weather
 import com.example.weathertest.models.dao.CityDaoEntity
 import com.example.weathertest.network.NetProvider
 import com.example.weathertest.storage.StorageProvider
@@ -14,7 +13,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -24,33 +22,54 @@ class SettingsViewModel @Inject constructor(
     private val storageProvider: StorageProvider
 ) : ViewModel() {
 
-    private val sharedFlow = MutableSharedFlow<String>()
-    //private var currentJob: Job? = null
+    private val sharedFlow = MutableSharedFlow<ApiCityResult>()
+    private val currentJob = Job()
 
     fun setFlowForSearch(queryFlow: Flow<String>) {
-        queryFlow.debounce(500)
-            .distinctUntilChanged()
-            .onEach {  }
-            .mapLatest {  }
-            .catch {  }
-            .launchIn(viewModelScope)
+        viewModelScope.launch(currentJob) {
+            queryFlow.debounce(500)
+                .distinctUntilChanged()
+                .onEach {
+                    sharedFlow.emit(ApiCityResult.Loading())
+                    //delay(10_000)
+                }
+                .mapLatest {
+                    Log.e("Tag", "query flow worked with    $it")
+                    sharedFlow.emit(ApiCityResult.Success(searchCity(it)))
+                }
+                .catch { sharedFlow.emit(ApiCityResult.Error(it.message ?: "search error")) }
+                .collect()
+        }
+    }
+
+    fun saveCity(city: CityDaoEntity) {
+        viewModelScope.launch(currentJob) {
+            storageProvider.setNewCurrentCity(city)
+        }
     }
 
     fun load() {
-        viewModelScope.launch {
+        viewModelScope.launch(currentJob) {
             try {
-                val response = CitiesApiResponse.fromJson(netProvider.getCityList())
-                if (response.error) throw Exception("Bad request body")
-                storageProvider.putCities(response.data.map { CityDaoEntity(it) })
+                Log.e("Tag", "load flow worked")
+                if (storageProvider.getCurrentCity() == null) {
+                    val response = CitiesApiResponse.fromJson(netProvider.getCityList())
+                    if (response.error) throw Exception("Bad request body")
+                    storageProvider.putCities(response.data.map { CityDaoEntity(it) })
+                }
             } catch (ex: Exception) {
-                sharedFlow.emit(ex.message ?: "oshibka")
+                sharedFlow.emit(ApiCityResult.Error(ex.message ?: "load error"))
             }
         }
-        //currentJob.ch
     }
 
-    fun getFlow(): Flow<String> {
+    fun getFlow(): Flow<ApiCityResult> {
         return sharedFlow
+    }
+
+    private suspend fun searchCity(query: String): List<CityDaoEntity> {
+        return if (query.isNotEmpty()) storageProvider.getCities(query)
+        else listOf()
     }
 
     override fun onCleared() {
@@ -58,7 +77,8 @@ class SettingsViewModel @Inject constructor(
         Log.e("Tag", "settingsViewModelScope cleared")
     }
 
-    /*fun clearJob() {
-        currentJob?.cancel()
-    }*/
+    fun clearJob() {
+        Log.e("Tag", "job canceled")
+        currentJob.cancel()
+    }
 }

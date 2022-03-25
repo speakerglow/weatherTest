@@ -13,7 +13,7 @@ interface RoomDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCities(cities: List<CityDaoEntity>)
 
-    @Query("SELECT * FROM cities WHERE name LIKE :name")
+    @Query("SELECT * FROM cities WHERE name LIKE '%' || :name || '%'")
     suspend fun getCitiesByName(name: String): List<CityDaoEntity>
 
     @Query("SELECT * FROM cities WHERE isCurrent")
@@ -21,7 +21,13 @@ interface RoomDao {
 
     @Transaction
     suspend fun setNewCurrentCity(newCityDaoEntity: CityDaoEntity) {
-        insertCities(listOf(CityDaoEntity(getCityByCurrentStatus()!!.name)))
+        if (getCityByCurrentStatus() != null) insertCities(
+            listOf(
+                CityDaoEntity(
+                    getCityByCurrentStatus()!!.name
+                )
+            )
+        )
         insertCities(listOf(newCityDaoEntity))
     }
 
