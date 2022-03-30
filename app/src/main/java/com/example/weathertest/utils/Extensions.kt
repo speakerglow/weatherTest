@@ -2,7 +2,11 @@ package com.example.weathertest.utils
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
+import androidx.annotation.LayoutRes
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.Flow
@@ -24,4 +28,8 @@ fun EditText.textChangedFlow(): Flow<String> {
             this@textChangedFlow.removeTextChangedListener(textChangedListener)
         }
     }
+}
+
+fun ViewGroup.inflate(@LayoutRes res: Int, attachToRoot: Boolean = false): View {
+    return LayoutInflater.from(context).inflate(res,this , attachToRoot)
 }

@@ -1,5 +1,6 @@
 package com.example.weathertest.network
 
+import android.util.Log
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import kotlin.random.Random
@@ -29,6 +30,7 @@ class NetProviderImpl(private val api: Api) : NetProvider {
     }
 
     override suspend fun getForecast(cityName: String): String {
+        Log.e("Tag", "get forecast")
         return api.getWeatherForecast(
             key = API_KEY,
             city = cityName,

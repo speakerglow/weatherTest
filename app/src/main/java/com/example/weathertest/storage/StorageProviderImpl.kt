@@ -1,7 +1,6 @@
 package com.example.weathertest.storage
 
 import android.util.Log
-import com.example.weathertest.models.dao.CheckListDaoEntity
 import com.example.weathertest.models.dao.CityDaoEntity
 import kotlin.random.Random
 
@@ -10,9 +9,9 @@ class StorageProviderImpl(private val roomDao: RoomDao) : StorageProvider {
         return Random.nextInt()
     }
 
-    override suspend fun putSome(string: String) {
+    /*override suspend fun putSome(string: String) {
         roomDao.setCheckList(CheckListDaoEntity(0, string))
-    }
+    }*/
 
     override suspend fun putCities(cities: List<CityDaoEntity>) {
         roomDao.insertCities(cities)
@@ -23,6 +22,7 @@ class StorageProviderImpl(private val roomDao: RoomDao) : StorageProvider {
     }
 
     override suspend fun getCurrentCity(): CityDaoEntity? {
+        Log.e("Tag", "storage get current city")
         return roomDao.getCityByCurrentStatus()
     }
 

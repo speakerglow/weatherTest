@@ -1,14 +1,10 @@
 package com.example.weathertest.storage
 
 import androidx.room.*
-import com.example.weathertest.models.dao.CheckListDaoEntity
 import com.example.weathertest.models.dao.CityDaoEntity
 
 @Dao
 interface RoomDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun setCheckList(checkList: CheckListDaoEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCities(cities: List<CityDaoEntity>)
@@ -21,12 +17,9 @@ interface RoomDao {
 
     @Transaction
     suspend fun setNewCurrentCity(newCityDaoEntity: CityDaoEntity) {
-        if (getCityByCurrentStatus() != null) insertCities(
-            listOf(
-                CityDaoEntity(
-                    getCityByCurrentStatus()!!.name
-                )
-            )
+        val currentCity = getCityByCurrentStatus()
+        if (currentCity != null) insertCities(
+            listOf(currentCity.apply { isCurrent = false })
         )
         insertCities(listOf(newCityDaoEntity))
     }

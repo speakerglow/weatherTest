@@ -4,12 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.weathertest.models.dao.CheckListDaoEntity
 import com.example.weathertest.models.dao.CityDaoEntity
 import com.example.weathertest.storage.MyDataBase.Companion.DATABASE_VERSION
 
 @Database(
-    entities = [CheckListDaoEntity::class, CityDaoEntity::class],
+    entities = [CityDaoEntity::class],
     version = DATABASE_VERSION
 )
 abstract class MyDataBase : RoomDatabase() {

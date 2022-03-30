@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">weatherTest</string>
+    <string name="city_name_text">City name:</string>
+    <string name="min_temp_title">min temp:</string>
+    <string name="precip_title">precip:</string>
+    <string name="max_temp_title">max temp:</string>
+    <string name="search_weather_text">search weather</string>
+    <string name="week_forecast_text">week forecast</string>
+    <string name="enter_city_name_text">enter city name...</string>
+    <string name="current_city_text">current city:</string>
 </resources>

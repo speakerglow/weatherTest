@@ -2,14 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <Button
         android:id="@+id/weekForecastButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="week forecast" />
+        android:layout_margin="10dp"
+        android:text="@string/week_forecast_text" />
+
+    <Button
+        android:id="@+id/sendMailButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/search_weather_text" />
 
     <FrameLayout
         android:id="@+id/frameLayoutContainer"
@@ -21,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:isScrollContainer="true"
             android:padding="20dp"
             android:textColor="@color/black"
             android:textSize="20sp" />

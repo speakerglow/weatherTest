@@ -6,7 +6,7 @@ interface StorageProvider {
 
     suspend fun getSome(): Int
 
-    suspend fun putSome(string: String)
+    //suspend fun putSome(string: String)
 
     suspend fun putCities(cities: List<CityDaoEntity>)
 
