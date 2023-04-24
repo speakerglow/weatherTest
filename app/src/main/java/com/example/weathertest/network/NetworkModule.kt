@@ -44,5 +44,5 @@ class NetworkModule {
 
         return retrofit.create()
     }
-
+//"http://demo.girngm.ru/mobile_inspector_vlg/"
 }

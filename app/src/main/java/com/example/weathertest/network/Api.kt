@@ -9,6 +9,12 @@ import retrofit2.http.*
 
 interface Api {
 
+    @POST
+    suspend fun login(
+        @Url url: String = "http://demo.girngm.ru/mobile_inspector_vlg/api/Users/Login",
+        @Body body: RequestBody
+    ): ResponseBody
+
     @POST("api/Groups/GetAll")
     suspend fun getSome(): ResponseBody
 

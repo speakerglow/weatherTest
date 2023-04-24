@@ -6,7 +6,7 @@
     android:padding="16dp">
 
     <Button
-        android:id="@+id/weekForecastButton"
+        android:id="@+id/LoginTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -17,30 +17,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="@string/search_weather_text" />
+        android:text="connect" />
 
-    <FrameLayout
-        android:id="@+id/frameLayoutContainer"
+    <Button
+        android:id="@+id/sendMsgButton"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="send msg" />
 
-        <TextView
-            android:id="@+id/weatherTv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:isScrollContainer="true"
-            android:padding="20dp"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+    <Button
+        android:id="@+id/msgRecieved"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="poluchennie" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:visibility="gone" />
+<!--    <FrameLayout-->
+<!--        android:id="@+id/frameLayoutContainer"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
 
-    </FrameLayout>
+<!--        <TextView-->
+<!--            android:id="@+id/weatherTv"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:gravity="center"-->
+<!--            android:isScrollContainer="true"-->
+<!--            android:padding="20dp"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="20sp" />-->
+
+<!--        <ProgressBar-->
+<!--            android:id="@+id/progressBar"-->
+<!--            android:layout_width="200dp"-->
+<!--            android:layout_height="200dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:visibility="gone" />-->
+
+<!--    </FrameLayout>-->
 
 </LinearLayout>

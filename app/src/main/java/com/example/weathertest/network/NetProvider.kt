@@ -5,6 +5,8 @@ import okhttp3.ResponseBody
 
 interface NetProvider {
 
+    suspend fun login(): Int
+
     suspend fun getCityList(): String
 
     suspend fun getSome(): String

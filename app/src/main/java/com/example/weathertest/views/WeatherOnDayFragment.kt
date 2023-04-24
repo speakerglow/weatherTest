@@ -25,70 +25,94 @@ class WeatherOnDayFragment : Fragment(R.layout.fragment_weather_on_day) {
     private val binding: FragmentWeatherOnDayBinding by viewBinding(FragmentWeatherOnDayBinding::bind)
     private val viewModel: WeatherOnDayViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setUpFlow()
-    }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+////        setUpFlow()
+//    }
+//
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+////        init()
+//    }
+//
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        viewModel.clearJob()
+//    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        init()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.clearJob()
-    }
-
-    private fun setUpFlow() {
+    override fun onResume() {
+        super.onResume()
+        viewModel.login()
+//        viewModel.connectToHub()
         lifecycleScope.launch {
-            viewModel.getFlow().flowWithLifecycle(
-                lifecycle, Lifecycle.State.STARTED
-            ).collect { result ->
-                when (result) {
-                    is ApiWeatherResult.Loading -> {
-                        showProgressBar(true)
-                    }
-                    is ApiWeatherResult.Success -> {
-                        binding.weatherTv.text = result.weather?.current.toString()
-                        showProgressBar(false)
-                    }
-                    is ApiWeatherResult.Error -> {
-                        showErrorSnackBar(result.exception) {
-                            viewModel.load()
-                        }
-                        showProgressBar(false)
-                    }
-                }
+            viewModel.loginFlow.collect {
+                binding.LoginTV.text = "login is $it"
+            }
+            viewModel.connectFlow.collect{
+                binding.sendMailButton.text = "hub state = $it"
+            }
+            viewModel.msgFlow.collect{
+                binding.msgRecieved.text = it
             }
         }
-    }
 
-    private fun init() {
-        binding.weekForecastButton.setOnClickListener {
-            findNavController().navigate(R.id.action_weatherOnDayFragment_to_weatherByDayFragment)
+        binding.LoginTV.setOnClickListener { viewModel.login() }
+        binding.sendMailButton.setOnClickListener {}
+        binding.sendMsgButton.setOnClickListener {
+            viewModel.sendMessage()
         }
-        binding.sendMailButton.setOnClickListener {
-            viewModel.searchWeather(requireContext())
-        }
-        viewModel.load()
     }
 
-    private fun showErrorSnackBar(errorMsg: String, callBack: () -> Unit) {
-        Snackbar.make(
-            binding.frameLayoutContainer,
-            errorMsg,
-            Snackbar.LENGTH_LONG
-        ).setAction(
-            "retry"
-        ) {
-            it.visibility = View.INVISIBLE
-            callBack()
-        }.show()
-    }
 
-    private fun showProgressBar(loading: Boolean) {
-        binding.progressBar.isVisible = loading
-        binding.weatherTv.isVisible = !loading
-    }
+//    private fun setUpFlow() {
+//        lifecycleScope.launch {
+//            viewModel.getFlow().flowWithLifecycle(
+//                lifecycle, Lifecycle.State.STARTED
+//            ).collect { result ->
+//                when (result) {
+//                    is ApiWeatherResult.Loading -> {
+//                        showProgressBar(true)
+//                    }
+//                    is ApiWeatherResult.Success -> {
+//                        binding.weatherTv.text = result.weather?.current.toString()
+//                        showProgressBar(false)
+//                    }
+//                    is ApiWeatherResult.Error -> {
+//                        showErrorSnackBar(result.exception) {
+//                            viewModel.load()
+//                        }
+//                        showProgressBar(false)
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+//    private fun init() {
+//        binding.weekForecastButton.setOnClickListener {
+//            findNavController().navigate(R.id.action_weatherOnDayFragment_to_weatherByDayFragment)
+//        }
+//        binding.sendMailButton.setOnClickListener {
+//            viewModel.searchWeather(requireContext())
+//        }
+//        viewModel.load()
+//    }
+//
+//    private fun showErrorSnackBar(errorMsg: String, callBack: () -> Unit) {
+//        Snackbar.make(
+//            binding.frameLayoutContainer,
+//            errorMsg,
+//            Snackbar.LENGTH_LONG
+//        ).setAction(
+//            "retry"
+//        ) {
+//            it.visibility = View.INVISIBLE
+//            callBack()
+//        }.show()
+//    }
+//
+//    private fun showProgressBar(loading: Boolean) {
+//        binding.progressBar.isVisible = loading
+//        binding.weatherTv.isVisible = !loading
+//    }
 }
